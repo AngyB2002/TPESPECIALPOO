@@ -1,76 +1,55 @@
 import Sucursal from './sucursal';
-
+​
 export default class Veterinaria{
   private nombre : string;
   private direccion : string;
-  private id : number;
+  private idCounter: number = 1;
   private sucursales : Sucursal[] = [];
   private sucursalSeleccionada : Sucursal | null = null;
-
+​
   constructor(nombre : string, direccion : string, sucursales : Sucursal[]){
     this.nombre = nombre;
     this.direccion = direccion;
-    this.id = this.generarIDUnico(sucursales);
   }
-
-  private generarIDUnico(sucursales : Sucursal[]) : number{
-    let noEsta: boolean = false;
-    let nuevoID: number = 0;
-
-    while (!noEsta){
-      nuevoID = Math.floor(Math.random() * 100000) + 1;
-      let estaID = false;
-
-      for (let i = 0; i < sucursales.length; i++){
-        if (sucursales[i].getId() === nuevoID){
-          estaID = true;
-          break;
-        }
-      }
-
-      if (!estaID){
-        noEsta = true;
-      }
-    }
-    return nuevoID;
+​
+  public crearSucursal(nombre : string, direccion : string) : void{
+    let nuevaSucursal = new Sucursal(this.idCounter, nombre, direccion);
+    this.sucursales.push(nuevaSucursal);
+    this.idCounter++; 
   }
-
-  getObtenerIDUnico() : number{
-    return this.generarIDUnico(this.sucursales);
+​
+  getId() : number{
+    return this.idCounter;
   }
-
+​
+  public sucursal() : string{
+    return `Veterinaria ID: ${this.idCounter}\nNombre: ${this.nombre}\nDireccion: ${this.direccion}`;
+  }
+​
   getNombre() : string{
     return this.nombre;
   }
-
+​
   setNombre(nombre : string) : void{
     this.nombre = nombre;
   }
-
+​
   getDireccion() : string{
     return this.direccion;
   }
-
+​
   setDireccion(direccion : string) : void{
     this.direccion = direccion;
   }
-
-  getId() : number{
-    return this.id;
-  }
-
-  public sucursal() : string{
-    return `Veterinaria ID: ${this.id}\nNombre: ${this.nombre}\nDirección: ${this.direccion}`;
-  }
-
-  public crearSucursal(sucursal : Sucursal) : void{
-    this.sucursales.push(sucursal);
-  }
-
+​
   getSucursales() : Sucursal[]{
     return this.sucursales;
   }
-
+​
+  setSucursales(sucursal : Sucursal) : void{
+    this.sucursales.push(sucursal)
+  }
+​
   public eliminarSucursal(sucursal : Sucursal) : void{
     let index = this.sucursales.indexOf(sucursal);
     if (index !== -1){
@@ -80,7 +59,7 @@ export default class Veterinaria{
       this.sucursales.splice(index, 1);
     }
   }
-
+​
   public seleccionarSucursal(sucursal : Sucursal) : void{
     let index = this.sucursales.indexOf(sucursal);
     if (index !== -1) {
@@ -90,7 +69,7 @@ export default class Veterinaria{
       console.log('La sucursal no existe en la lista de sucursales.');
     }
   }
-
+​
   public getSucursalSeleccionada() : Sucursal | null{
     return this.sucursalSeleccionada;
   }
