@@ -68,13 +68,6 @@ export default class Sucursal{
         }
     }
 
-    public eliminarPaciente(paciente : Paciente) : void{
-        let index = this.pacientes.indexOf(paciente);
-        if (index !== -1){
-            this.pacientes.splice(index, 1);
-        }
-    }
-
     public eliminarProducto(producto : Producto) : void{
         let index = this.productos.indexOf(producto);
         if (index !== -1){
@@ -102,8 +95,7 @@ export default class Sucursal{
         this.proveedores.push(proveedor);
     }
 
-    setProducto(producto : Producto, proveedor : Proveedor){
-        producto.setProveedor(proveedor);
+    setProducto(producto : Producto,){
         this.productos.push(producto);
     }
   
