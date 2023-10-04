@@ -1,5 +1,5 @@
 import Cliente from "./cliente";
-import Proveedor from "./Proveedor";
+import Proveedor from "./proveedor";
 import Paciente from "./Paciente";
 import Producto from "./producto";
 import Sucursal from "./sucursal";
@@ -15,13 +15,16 @@ let proveedor1 = new Proveedor("Proveedor de alimentos", "2983-132465", []);
 let proveedor2 = new Proveedor("Proveedor de accesorios", "346-967-365", []);
 
 let paciente1 = new Paciente("Firulais", "Perro", cliente1.getId());
+let paciente1A = new Paciente("Pepe", "Gato", cliente1.getId());
 let paciente2 = new Paciente("Nano", "Gato", cliente2.getId());
 
-let producto1 = new Producto(1, "15 kg de alimento balanceado", 20500, proveedor1);
-let producto2 = new Producto(2, "Correa regulable",2300, proveedor2);
+let producto1 = new Producto("15 kg de alimento balanceado", 20500);
+let producto2 = new Producto("Correa regulable",2300);
 
-let sucursal1 = new Sucursal(1, "Sucursal Eva A", "Calle 456");
+
+let sucursal1 = new Sucursal(1,"Sucursal Eva A", "Calle 456");
 let sucursal2 = new Sucursal(2, "Sucursal Eva B", "Calle 789");
+
 
 sucursal1.setCliente(cliente1);
 sucursal1.setProveedor(proveedor1);
@@ -32,13 +35,14 @@ sucursal2.setProveedor(proveedor2);
 sucursal2.setPaciente(paciente2);
 
 cliente1.setPaciente(paciente1);
+cliente1.setPaciente(paciente1A);
 cliente2.setPaciente(paciente2);
 
-sucursal1.setProducto(producto1, proveedor1);
-sucursal2.setProducto(producto2, proveedor2);
+sucursal1.setProducto(producto1);
+sucursal2.setProducto(producto2);
 
-veterinaria.crearSucursal(sucursal1);
-veterinaria.crearSucursal(sucursal2);
+veterinaria.crearSucursal("Sucursal Eva A", "Calle 456");
+veterinaria.crearSucursal("Sucursal Eva B", "Calle 789");
 
 // SUCURSALES
 function mostrarMenuSucursales(){
@@ -50,15 +54,15 @@ function mostrarMenuSucursales(){
   console.log("5. Salir");
 }
 
-function gestionarSucursales(veterinaria: Veterinaria) {
+function gestionarSucursales(veterinaria : Veterinaria){
   let salir = false;
 
-  while (!salir) {
+  while (!salir){
     mostrarMenuSucursales();
 
     let opcion = readlineSync.question("Ingrese una opcion: ");
 
-    switch (opcion) {
+    switch (opcion){
       case "1":
         crearSucursal(veterinaria);
         break;
@@ -66,8 +70,7 @@ function gestionarSucursales(veterinaria: Veterinaria) {
         seleccionarSucursal(veterinaria);
         break;
       case "3":
-        console.log("Sucursales disponibles:");
-        console.log(veterinaria.getSucursales());
+        listarSucursales(veterinaria)
         break;
       case "4":
         eliminarSucursal(veterinaria);
@@ -82,27 +85,39 @@ function gestionarSucursales(veterinaria: Veterinaria) {
   }
 }
 
-function crearSucursal(veterinaria: Veterinaria){
+function crearSucursal(veterinaria : Veterinaria){
   let nombre = readlineSync.question("Ingrese el nombre de la nueva sucursal: ");
-  let direccion = readlineSync.question("Ingrese la dirección de la nueva sucursal: ");
-  let nuevaSucursal = new Sucursal(0, nombre, direccion);
+  let direccion = readlineSync.question("Ingrese la direccion de la nueva sucursal: ");
 
-  veterinaria.crearSucursal(nuevaSucursal);
+  veterinaria.crearSucursal(nombre, direccion); 
   console.log(`Sucursal "${nombre}" creada con exito.`);
 }
-  
-function seleccionarSucursal(veterinaria : Veterinaria){
+
+function listarSucursales(veterinaria : Veterinaria){
   let sucursales = veterinaria.getSucursales();
   console.log("SUCURSALES DISPONIBLES");
-  sucursales.forEach((sucursal, index) =>{
-    console.log(`${index + 1}. ${sucursal.getNombre()}`);
+  sucursales.forEach((sucursal) =>{
+    console.log(`Nombre: ${sucursal.getNombre()}, Direccion: ${sucursal.getDireccion()}, ID: ${sucursal.getId()}`);
   });
-  
-  let seleccion = parseInt(readlineSync.question("Ingrese el numero de la sucursal a seleccionar: ")) - 1;
-  
-  if (!isNaN(seleccion) && seleccion >= 0 && seleccion < sucursales.length){
-    let sucursalSeleccionada = sucursales[seleccion];
-    veterinaria.seleccionarSucursal(sucursalSeleccionada);
+}
+
+function seleccionarSucursal(veterinaria : Veterinaria){
+  let sucursales = veterinaria.getSucursales();
+
+  if (sucursales.length === 0){
+    console.log("No hay sucursales disponibles.");
+    return;
+  }
+
+  console.log("SUCURSALES DISPONIBLES:");
+  sucursales.forEach((sucursal, index) =>{
+    console.log(`${index + 1}. Nombre: ${sucursal.getNombre()}, Direccion: ${sucursal.getDireccion()}, ID: ${sucursal.getId()}`);
+  });
+
+  let numeroASeleccionar = readlineSync.questionInt("Ingrese el numero de la sucursal a seleccionar: ") - 1;
+
+  if (numeroASeleccionar >= 0 && numeroASeleccionar < sucursales.length){
+    let sucursalSeleccionada = sucursales[numeroASeleccionar];
     console.log(`Sucursal "${sucursalSeleccionada.getNombre()}" seleccionada.`);
   } else{
     console.log("Numero de sucursal no valido.");
@@ -120,8 +135,8 @@ function eliminarSucursal(veterinaria : Veterinaria){
   }
 }
 
-// CLIENTES
-function gestionarClientes(sucursal: Sucursal) {
+//CLIENTES
+function gestionarClientes(sucursal : Sucursal, cliente : Cliente){
   let salir = false;
 
   while (!salir) {
@@ -130,16 +145,15 @@ function gestionarClientes(sucursal: Sucursal) {
     console.log("2. Listar Clientes");
     console.log("3. Modificar Cliente");
     console.log("4. Eliminar Cliente");
-    console.log("5. Incrementar Visitas");
-    console.log("6. Verificar Cliente VIP");
-    console.log("7. Seleccionar Paciente");
-    console.log("8. Regresar a la Sucursal");
+    console.log("5. Gestionar Visitas");
+    console.log("6. Seleccionar Paciente");
+    console.log("7. Regresar a la Sucursal");
 
     let opcion = readlineSync.question("Ingrese una opcion: ");
 
-    switch (opcion) {
+    switch (opcion){
       case "1":
-        agregarCliente(sucursal, cliente1);
+        agregarCliente(sucursal);
         break;
       case "2":
         listarClientes(sucursal);
@@ -151,15 +165,12 @@ function gestionarClientes(sucursal: Sucursal) {
         eliminarCliente(sucursal);
         break;
       case "5":
-        incrementarVisitas(sucursal);
+        gestionarVisitas(sucursal);
         break;
       case "6":
-        verificarClienteVIP(sucursal);
+        listarClientesYPacientes(sucursal);
         break;
       case "7":
-        seleccionarPaciente(sucursal);
-        break;
-      case "8":
         salir = true;
         break;
       default:
@@ -169,35 +180,87 @@ function gestionarClientes(sucursal: Sucursal) {
   }
 }
 
-function agregarCliente(sucursal : Sucursal, cliente : Cliente){
+function listarClientesYPacientes(sucursal : Sucursal){
+  listarClientes(sucursal);
+
+  let numClienteSeleccionPaciente = readlineSync.questionInt("Ingrese el numero del cliente que seleccionara un paciente: ") - 1;
+  let clientes = sucursal.getClientes();
+
+  if (numClienteSeleccionPaciente >= 0 && numClienteSeleccionPaciente < clientes.length){
+    let cliente = clientes[numClienteSeleccionPaciente];
+
+    listarPacientes(cliente);
+
+    let pacienteSeleccionado = readlineSync.questionInt("Ingrese el numero del paciente a seleccionar: ") - 1;
+
+    if (pacienteSeleccionado >= 0 && pacienteSeleccionado < cliente.getPacientes().length){
+      let paciente = cliente.getPacientes()[pacienteSeleccionado];
+      cliente.seleccionarPaciente(paciente);
+    } else{
+      console.log("Numero de paciente no valido.");
+    }
+  } else{
+    console.log("Numero de cliente no valido.");
+  }
+}
+
+function agregarCliente(sucursal : Sucursal){
   let nombre = readlineSync.question("Ingrese el nombre del cliente: ");
   let telefono = readlineSync.question("Ingrese el telefono del cliente: ");
-  
+
   let nuevoCliente = new Cliente(nombre, telefono, []);
   sucursal.setCliente(nuevoCliente);
 
   let id = nuevoCliente.getObtenerIDUnico();
 
-  console.log(`Cliente "${nombre}" agregado con ID único: ${id} a la sucursal.`);
+  console.log(`Cliente "${nombre}" agregado con ID unico: ${id} a la sucursal.`);
+}
 
+function agregarPaciente(sucursalSeleccionada : Sucursal){
+  let nombreCliente = readlineSync.question("Ingrese el nombre del dueno del paciente: ");
+  let clienteEncontrado = buscarClientePorNombre(nombreCliente, sucursalSeleccionada);
+
+  if (!clienteEncontrado){
+    console.log("Cliente no encontrado.");
+    return;
+  }
+
+  let nombre = readlineSync.question("Ingrese el nombre del paciente: ");
+  let especie = readlineSync.question("Ingrese la especie del paciente: ");
+
+  let paciente = new Paciente(nombre, especie, clienteEncontrado.getId());
+  clienteEncontrado.seleccionarPaciente(paciente);
+
+  console.log(`Paciente "${nombre}" registrado con exito para el cliente "${clienteEncontrado.getNombre()}".`);
+}
+
+function buscarClientePorNombre(nombreCliente : string, sucursal : Sucursal) : Cliente | undefined{
+  let listaClientes = sucursal.getClientes();
+
+  for (let i = 0; i < listaClientes.length; i++){
+    if (listaClientes[i].getNombre() === nombreCliente){
+      return listaClientes[i];
+    }
+  }
+  return undefined;
 }
 
 function listarClientes(sucursal : Sucursal){
   let clientes = sucursal.getClientes();
-  console.log("Clientes en la sucursal:");
-  clientes.forEach((cliente) =>{
-    console.log(`- ${cliente.getNombre()} (${cliente.getTelefono()})`);
+  console.log("Clientes:");
+  clientes.forEach((cliente, index) =>{
+    console.log(`${index + 1}. Nombre: ${cliente.getNombre()}, Telefono: ${cliente.getTelefono()}, ID: ${cliente.getId()}`);
   });
 }
 
 function modificarCliente(sucursal : Sucursal){
   listarClientes(sucursal);
 
-  let clienteX = parseInt(readlineSync.question("Ingrese el numero del cliente a modificar: ")) - 1;
+  let numClienteAModificar = readlineSync.questionInt("Ingrese el numero del cliente a modificar: ") - 1;
   let clientes = sucursal.getClientes();
 
-  if (!isNaN(clienteX) && clienteX >= 0 && clienteX < clientes.length) {
-    let cliente = clientes[clienteX];
+  if (numClienteAModificar >= 0 && numClienteAModificar < clientes.length){
+    let cliente = clientes[numClienteAModificar];
     let nuevoNombre = readlineSync.question("Ingrese el nuevo nombre del cliente: ");
     let nuevoTelefono = readlineSync.question("Ingrese el nuevo telefono del cliente: ");
 
@@ -205,19 +268,19 @@ function modificarCliente(sucursal : Sucursal){
     cliente.setTelefono(nuevoTelefono);
 
     console.log("Cliente modificado con exito.");
-  } else {
-    console.log("Número de cliente no valido.");
+  } else{
+    console.log("Numero de cliente no valido.");
   }
 }
 
 function eliminarCliente(sucursal : Sucursal){
   listarClientes(sucursal);
 
-  let clienteX = parseInt(readlineSync.question("Ingrese el numero del cliente a eliminar: ")) - 1;
+  let numClienteAEliminar = readlineSync.questionInt("Ingrese el numero del cliente a eliminar: ") - 1;
   let clientes = sucursal.getClientes();
 
-  if (!isNaN(clienteX) && clienteX >= 0 && clienteX < clientes.length){
-    let cliente = clientes[clienteX];
+  if (numClienteAEliminar >= 0 && numClienteAEliminar < clientes.length){
+    let cliente = clientes[numClienteAEliminar];
     sucursal.eliminarCliente(cliente);
 
     console.log("Cliente eliminado con exito.");
@@ -226,62 +289,21 @@ function eliminarCliente(sucursal : Sucursal){
   }
 }
 
-function incrementarVisitas(sucursal: Sucursal) {
+function gestionarVisitas(sucursal : Sucursal){
   listarClientes(sucursal);
 
-  let clienteX = parseInt(readlineSync.question("Ingrese el numero del cliente al que desea incrementar las visitas: ")) - 1;
+  let numClienteSeleccionado = readlineSync.questionInt("Ingrese el numero del cliente: ") - 1;
   let clientes = sucursal.getClientes();
 
-  if (!isNaN(clienteX) && clienteX >= 0 && clienteX < clientes.length) {
-    let cliente = clientes[clienteX];
-    cliente.incrementarVisita();
-
-    console.log("Visitas incrementadas con exito.");
-  } else {
-    console.log("Numero de cliente no valido.");
-  }
-}
-
-function verificarClienteVIP(sucursal: Sucursal) {
-  listarClientes(sucursal);
-
-  let clienteX = parseInt(readlineSync.question("Ingrese el numero del cliente para verificar si es VIP: ")) - 1;
-  let clientes = sucursal.getClientes();
-
-  if (!isNaN(clienteX) && clienteX >= 0 && clienteX < clientes.length) {
-    let cliente = clientes[clienteX];
-    if (cliente.esClienteVIP()) {
-      console.log("El cliente es VIP.");
-    } else {
-      console.log("El cliente no es VIP.");
-    }
-  } else {
-    console.log("Numero de cliente no valido.");
-  }
-}
-
-function seleccionarPaciente(sucursal: Sucursal) {
-  listarClientes(sucursal);
-
-  let clienteX = parseInt(readlineSync.question("Ingrese el número del cliente que seleccionará un paciente: ")) - 1;
-  let clientes = sucursal.getClientes();
-
-  if (!isNaN(clienteX) && clienteX >= 0 && clienteX < clientes.length) {
-    let cliente = clientes[clienteX];
-
-    let pacientes = cliente.getPacientes();
-    console.log(`Pacientes de ${cliente.getNombre()}:`);
-    pacientes.forEach((paciente, index) => {
-      console.log(`${index + 1}. ${paciente.getNombre()} (${paciente.getEspecie()})`);
-    });
-
-    let pacienteSeleccionado = parseInt(readlineSync.question("Ingrese el numero del paciente a seleccionar: ")) - 1;
+  if (numClienteSeleccionado >= 0 && numClienteSeleccionado < clientes.length){
+    let cliente = clientes[numClienteSeleccionado];
     
-    if (!isNaN(pacienteSeleccionado) && pacienteSeleccionado >= 0 && pacienteSeleccionado < pacientes.length) {
-      let paciente = pacientes[pacienteSeleccionado];
-      cliente.seleccionarPaciente(paciente);
+    cliente.incrementarVisita();
+    
+    if (cliente.getNumVisitas() >= 5){
+      console.log("Visitas incrementadas con exito. El cliente es VIP.");
     } else {
-      console.log("Numero de paciente no valido.");
+      console.log("Visitas incrementadas con exito. El cliente no es VIP.");
     }
   } else {
     console.log("Numero de cliente no valido.");
@@ -335,22 +357,22 @@ function agregarProveedor(sucursal : Sucursal){
   console.log(`Proveedor "${nombre}" agregado con exito a la sucursal.`);
 }
 
-function listarProveedores(sucursal : Sucursal){
+function listarProveedores(sucursal: Sucursal){
   let proveedores = sucursal.getProveedores();
   console.log("Proveedores en la sucursal:");
-  proveedores.forEach((proveedor) =>{
-    console.log(`- ${proveedor.getNombre()} (${proveedor.getTelefono()})`);
+  proveedores.forEach((proveedor, index) => {
+    console.log(`${index + 1}. Nombre: ${proveedor.getNombre()}, Telefono: ${proveedor.getTelefono()}, ID: ${proveedor.getId()}`);
   });
 }
  
 function modificarProveedor(sucursal : Sucursal){
   listarProveedores(sucursal);
   
-  let proveedorX = parseInt(readlineSync.question("Ingrese el numero del proveedor a modificar: ")) - 1;
+  let proveedorAModificar = readlineSync.questionInt("Ingrese el numero del proveedor a modificar: ") - 1;
   let proveedores = sucursal.getProveedores();
   
-  if (!isNaN(proveedorX) && proveedorX >= 0 && proveedorX < proveedores.length) {
-    let proveedor = proveedores[proveedorX];
+  if (proveedorAModificar >= 0 && proveedorAModificar < proveedores.length){
+    let proveedor = proveedores[proveedorAModificar];
     let nuevoNombre = readlineSync.question("Ingrese el nuevo nombre del proveedor: ");
     let nuevoTelefono = readlineSync.question("Ingrese el nuevo telefono del proveedor: ");
   
@@ -362,51 +384,47 @@ function modificarProveedor(sucursal : Sucursal){
     console.log("Numero de proveedor no valido.");
   }
 }
-  
+
 function eliminarProveedor(sucursal : Sucursal){
   listarProveedores(sucursal);
-  
-  let proveedorX = parseInt(readlineSync.question("Ingrese el numero del proveedor a eliminar: ")) - 1;
+
+  let proveedorAEliminar = readlineSync.questionInt("Ingrese el numero del proveedor a eliminar: ") - 1;
   let proveedores = sucursal.getProveedores();
-  
-  if (!isNaN(proveedorX) && proveedorX >= 0 && proveedorX < proveedores.length) {
-    let proveedor = proveedores[proveedorX];
+
+  if (proveedorAEliminar >= 0 && proveedorAEliminar < proveedores.length){
+    let proveedor = proveedores[proveedorAEliminar];
     sucursal.eliminarProveedor(proveedor);
-  
+
     console.log("Proveedor eliminado con exito.");
-  } else {
+  } else{
     console.log("Numero de proveedor no valido.");
   }
 }
 
 // PACIENTES
-function gestionarPacientes(sucursal : Sucursal, cliente : Cliente){
+function gestionarPacientes(cliente : Cliente, sucursal : Sucursal){
   let salir = false;
   
   while (!salir) {
     console.log("GESTIONAR PACIENTES");
     console.log("1. Agregar Paciente");
-    console.log("2. Listar Pacientes");
-    console.log("3. Modificar Paciente");
-    console.log("4. Eliminar Paciente");
-    console.log("5. Regresar a la Sucursal");
+    console.log("2. Modificar Paciente");
+    console.log("3. Eliminar Paciente");
+    console.log("4. Regresar a la Sucursal");
   
-    const opcion = readlineSync.question("Ingrese una opcion: ");
+    let opcion = readlineSync.question("Ingrese una opcion: ");
   
-    switch (opcion) {
+    switch (opcion){
       case "1":
-        agregarPaciente();
+        agregarPaciente(sucursal);
         break;
       case "2":
-        listarPacientes(cliente);
+        modificarPaciente(cliente);
         break;
       case "3":
-        modificarPaciente();
+        eliminarPaciente(cliente);
         break;
       case "4":
-        eliminarPaciente(sucursal, cliente);
-        break;
-      case "5":
         salir = true;
         break;
       default:
@@ -415,30 +433,23 @@ function gestionarPacientes(sucursal : Sucursal, cliente : Cliente){
     }
   }
 }
-  
-function agregarPaciente(){
-  let nombre = readlineSync.question("Ingrese el nombre del paciente: ");
-  let especie = readlineSync.question("Ingrese la especie del paciente: ");
-  let paciente = new Paciente(nombre, especie, cliente1.getId());
-  console.log(`Paciente "${nombre}" creado con exito.`);
-}
 
 function listarPacientes(cliente : Cliente){
   let pacientes = cliente.getPacientes();
-  console.log("Pacientes del Cliente:");
+  console.log(`Pacientes de ${cliente.getNombre()}:`);
   pacientes.forEach((paciente, index) =>{
-    console.log(`${index + 1}. ${paciente.getNombre()}`);
+    console.log(`${index + 1}. ${paciente.getNombre()} (${paciente.getEspecie()}), ID del Dueño: ${cliente.getId()}`);
   });
 }
 
-function modificarPaciente(){
-  listarPacientes(cliente1);
+function modificarPaciente(cliente : Cliente){
+  listarPacientes(cliente);
 
-  let pacienteX = parseInt(readlineSync.question("Ingrese el numero del paciente a modificar: ")) - 1;
+  let pacienteAModificar = parseInt(readlineSync.question("Ingrese el numero del paciente a modificar: ")) - 1;
   let pacientes = cliente1.getPacientes();
 
-  if (pacienteX >= 0 && pacienteX < pacientes.length) {
-    let paciente = pacientes[pacienteX];
+  if (pacienteAModificar >= 0 && pacienteAModificar < pacientes.length){
+    let paciente = pacientes[pacienteAModificar];
 
     console.log("DATOS DEL PACIENTE A MODIFICAR");
     console.log("Nombre:", paciente.getNombre());
@@ -456,24 +467,25 @@ function modificarPaciente(){
   }
 }
 
-function eliminarPaciente(sucursal : Sucursal, cliente : Cliente){
+function eliminarPaciente(cliente : Cliente){
   listarPacientes(cliente);
-  
-  let pacienteX = parseInt(readlineSync.question("Ingrese el numero del paciente a eliminar: ")) - 1;
+
+  let pacienteAEliminar = readlineSync.questionInt("Ingrese el numero del paciente a eliminar: ") - 1;
   let pacientes = cliente.getPacientes();
-  
-  if (!isNaN(pacienteX) && pacienteX >= 0 && pacienteX < pacientes.length){
-    let paciente = pacientes[pacienteX];
-    sucursal.eliminarPaciente(paciente);
-  
+
+  if (pacienteAEliminar >= 0 && pacienteAEliminar < pacientes.length){
+    let paciente = pacientes[pacienteAEliminar];
+
+    cliente.eliminarPaciente(paciente);
+
     console.log("Paciente eliminado con exito.");
-  } else{
+  } else {
     console.log("Numero de paciente no valido.");
   }
 }
 
 // PRODUCTOS
-function gestionarProductos(sucursal : Sucursal, proveedor : Proveedor){
+function gestionarProductos(sucursal : Sucursal){
   let salir = false;
   
   while (!salir) {
@@ -488,7 +500,7 @@ function gestionarProductos(sucursal : Sucursal, proveedor : Proveedor){
   
     switch (opcion){
       case "1":
-        agregarProducto(sucursal, proveedor);
+        agregarProducto(sucursal);
         break;
       case "2":
         listarProductos(sucursal);
@@ -509,37 +521,38 @@ function gestionarProductos(sucursal : Sucursal, proveedor : Proveedor){
   }
 }
  
-function agregarProducto(sucursal : Sucursal, proveedor : Proveedor){
+function agregarProducto(sucursal : Sucursal){
   let nombre = readlineSync.question("Ingrese el nombre del producto: ");
   let precio = parseFloat(readlineSync.question("Ingrese el precio del producto: "));
   
-  let nuevoProducto = new Producto(0, nombre, precio, []);
-  sucursal.setProducto(nuevoProducto, proveedor);
-  console.log(`Producto "${nombre}" agregado con exito a la sucursal con el proveedor "${proveedor.getNombre()}".`);
+  let nuevoProducto = new Producto(nombre, precio);
+
+  sucursal.setProducto(nuevoProducto);
+  console.log(`Producto "${nombre}" agregado con exito.`);
 }
 
 function listarProductos(sucursal : Sucursal){
   let productos = sucursal.getProductos();
   console.log("Productos en la sucursal:");
-  productos.forEach((producto) =>{
-    console.log(`- ${producto.getNombre()} (Precio: ${producto.getPrecio()})`);
+  productos.forEach((producto, index) =>{
+    console.log(`${index + 1}. Nombre: ${producto.getNombre()}, Precio: ${producto.getPrecio()}, ID: ${producto.getId()}`);
   });
 }
-  
+
 function modificarProducto(sucursal : Sucursal){
   listarProductos(sucursal);
-  
-  let productoX = parseInt(readlineSync.question("Ingrese el numero del producto a modificar: ")) - 1;
+
+  let productoAModificar = readlineSync.questionInt("Ingrese el numero del producto a modificar: ") - 1;
   let productos = sucursal.getProductos();
-  
-  if (!isNaN(productoX) && productoX >= 0 && productoX < productos.length) {
-    let producto = productos[productoX];
+
+  if (productoAModificar >= 0 && productoAModificar < productos.length){
+    let producto = productos[productoAModificar];
     let nuevoNombre = readlineSync.question("Ingrese el nuevo nombre del producto: ");
     let nuevoPrecio = parseFloat(readlineSync.question("Ingrese el nuevo precio del producto: "));
-  
+
     producto.setNombre(nuevoNombre);
     producto.setPrecio(nuevoPrecio);
-  
+
     console.log("Producto modificado con exito.");
   } else{
     console.log("Numero de producto no valido.");
@@ -548,36 +561,38 @@ function modificarProducto(sucursal : Sucursal){
 
 function eliminarProducto(sucursal : Sucursal){
   listarProductos(sucursal);
-  
-  let productoX = parseInt(readlineSync.question("Ingrese el numero del producto a eliminar: ")) - 1;
+
+  let productoAEliminar = readlineSync.questionInt("Ingrese el numero del producto a eliminar: ") - 1;
   let productos = sucursal.getProductos();
-  
-  if (!isNaN(productoX) && productoX >= 0 && productoX < productos.length) {
-    let producto = productos[productoX];
+
+  if (productoAEliminar >= 0 && productoAEliminar < productos.length){
+    let producto = productos[productoAEliminar];
+
     sucursal.eliminarProducto(producto);
-  
+
     console.log("Producto eliminado con exito.");
   } else{
     console.log("Numero de producto no valido.");
   }
 }
 
-//PRINCIPAL
-function menu(){
+function menu(sucursal, veterinaria, cliente){
   console.log(`Bienvenido a ${veterinaria.getNombre()} - ${veterinaria.getDireccion()}`);
-  veterinaria.seleccionarSucursal(sucursal1); 
-  let sucursalSeleccionada = veterinaria.getSucursalSeleccionada();
+  let sucursalSeleccionada = sucursal;
 
   if (sucursalSeleccionada){
     gestionarSucursales(veterinaria);
-    gestionarClientes(sucursalSeleccionada);
-    gestionarPacientes(sucursalSeleccionada, cliente1);
+
+    let clienteSeleccionado = cliente || sucursalSeleccionada.getClientes()[0];
+   
+    gestionarClientes(sucursalSeleccionada, clienteSeleccionado);
+    gestionarPacientes(clienteSeleccionado, sucursalSeleccionada);
     gestionarProveedores(sucursalSeleccionada);
-    gestionarProductos(sucursalSeleccionada, proveedor1);
+    gestionarProductos(sucursalSeleccionada);
   } else{
     console.log("No se ha seleccionado una sucursal.");
   }
   console.log("¡Hasta luego!");
 }
 
-menu();
+menu(sucursal1, veterinaria, cliente1);
