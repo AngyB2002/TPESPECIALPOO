@@ -2,12 +2,12 @@ import Persona from "./Persona";
 import Producto from "./producto";
 
 export default class Proveedor extends Persona{
+    private productos : Producto[] = [];
+
     constructor(nombre : string, telefono : string, proveedor : Persona[]){
         super(nombre, telefono);
         this.id = this.generarIDUnico(proveedor);
     }
-
-    private productos : Producto[] = [];
 
     private generarIDUnico(proveedor : Persona[]) : number{
         let noEsta: boolean = false;
@@ -32,8 +32,8 @@ export default class Proveedor extends Persona{
     }
 
     getObtenerIDUnico() : number{
-        return this.generarIDUnico([]);
-    }
+        return this.id;
+    }    
 
     getProductos() : Producto[]{
         return this.productos;
