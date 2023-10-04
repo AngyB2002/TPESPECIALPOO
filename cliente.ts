@@ -2,16 +2,13 @@ import Persona from "./Persona";
 import Paciente from "./Paciente";
 
 export default class Cliente extends Persona{
-    private esVIP : boolean;
-    private numVisitas : number;
+    private numVisitas: number = 0;
     private pacientes : Paciente[] = [];
     private pacienteSeleccionado : Paciente | null = null;
 
     constructor(nombre : string, telefono : string, pacientes : Persona[]){
         super(nombre, telefono);
         this.id = this.generarIDUnico(pacientes);
-        this.esVIP = false;
-        this.numVisitas = 0;
     }
 
     private generarIDUnico(pacientes : Persona[]) : number{
@@ -37,23 +34,20 @@ export default class Cliente extends Persona{
     }
 
     getObtenerIDUnico() : number{
-        return this.generarIDUnico([]);
+        return this.id;
     }
 
-    incrementarVisita(){
+    getNumVisitas() : number{
+        return this.numVisitas;
+    }
+    
+    public incrementarVisita(){
         this.numVisitas++;
-        if (this.numVisitas >= 5){
-            this.esVIP = true;
-        }
-    }
-
-    esClienteVIP() : boolean{
-        return this.esVIP;
     }
 
     public seleccionarPaciente(paciente : Paciente) : void{
         this.pacienteSeleccionado = paciente;
-        console.log(`Proveedor "${paciente.getNombre()}" seleccionado.`);
+        console.log(`Paciente "${paciente.getNombre()}" seleccionado.`);
     }
 
     getPacientes() : Paciente[]{
@@ -70,5 +64,12 @@ export default class Cliente extends Persona{
     
     setPacienteSeleccionado(paciente : Paciente | null) : void{
         this.pacienteSeleccionado = paciente;
+    }
+
+    public eliminarPaciente(paciente : Paciente) : void{
+        let index = this.pacientes.indexOf(paciente);
+        if (index !== -1){
+            this.pacientes.splice(index, 1);
+        }
     }
 }
