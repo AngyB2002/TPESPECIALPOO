@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="estilo.css"> <!-- Vincular el archivo CSS -->
+    <title>Lista de Empleados</title>
+</head>
+<body>
+    <div id="container">
+        <h1>Lista de Empleados</h1>
+        <table id="employee-table">
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Nombre</th>
+                    <th>Área</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div id="employee-details" class="hidden">
+            <!-- Detalles del empleado se mostrarán aquí -->
+        </div>
+    </div>
+
+    <div id="container">
+        <h1>Agregar empleado nuevo</h1>
+        <form id="employee-form" class="hidden">
+            <!-- Formulario para crear un nuevo empleado -->
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" required>
+            
+            <!-- Nuevo campo "apellido" -->
+            <label for="apellido">Apellido:</label>
+            <input type="text" id="apellido" required>
+
+            <label for="area">Área:</label>
+            <input type="text" id="area" required>
+
+            <!-- Nuevo campo "domicilio" -->
+            <label for="domicilio">Domicilio:</label>
+            <input type="text" id="domicilio" required>
+
+            <label for="identificacion">Identificación:</label>
+            <input type="text" id="identificacion" required>
+            
+            <button type="submit">Crear Empleado</button>
+        </form>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
