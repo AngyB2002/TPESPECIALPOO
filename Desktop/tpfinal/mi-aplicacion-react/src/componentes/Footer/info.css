@@ -1,0 +1,14 @@
+/* Ajusta según tus necesidades */
+.info-container {
+    background-color: #CDFAD5; /* Color de fondo del footer */
+    color: #FF8080; /* Color del texto en el footer */
+    text-align: center;
+    font-weight: bold; /* Texto en negrita */
+    position: fixed; /* Fijar posición */
+    bottom: 0; /* En la parte inferior */
+    width: 100%; /* Ancho completo */
+    height: 200px; /* Altura de la línea */
+    border-top: 2px solid #fff; /* Línea superior de color blanco */
+    border-bottom: 2px solid #fff; /* Línea inferior de color blanco */
+  }
+  

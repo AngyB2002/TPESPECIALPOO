@@ -1,0 +1,27 @@
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #FF8080;
+  background-image: url('');
+  background-size: cover;
+  background-position: center;
+  color: #F6FDC3;
+}
+
+.barra-horizontal-color {
+  background-color: #CDFAD5;
+  text-align: center;
+  padding: 10px;
+}
+
+.carrusel-barra-horizontal {
+  height: 200px;
+  background-color: #FF8080;
+}
+
+.productos-destacados {
+  color: #FF8080;
+  font-weight: bold;
+  margin: 0;
+}

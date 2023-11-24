@@ -1,0 +1,12 @@
+ 
+  .menu-button {
+    background-color: #CDFAD5; /* Color del botón de menú */
+    color: #FF8080; /* Color del texto del botón */
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border: 2px solid #ffcf96;
+    font-weight: bold;  
+    border-radius: 10px;
+}
+  

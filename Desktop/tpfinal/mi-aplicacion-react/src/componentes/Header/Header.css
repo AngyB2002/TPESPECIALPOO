@@ -1,0 +1,22 @@
+.header-bar {
+    background-color: #F6FDC3; /* Color de la barra horizontal */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
+
+.spacer {
+    flex: 1; /* El spacer ocupa el espacio disponible para empujar el botón a la derecha */
+  }
+
+  .login-button {
+    background-color: #CDFAD5; /* Color del botón de login */
+    color: #FF8080; /* Color del texto del botón */
+    padding: 10px 15px;
+    cursor: pointer;
+    border: 2px solid #ffcf96;
+    font-weight: bold; 
+    border-radius: 10px;
+  }
+  
